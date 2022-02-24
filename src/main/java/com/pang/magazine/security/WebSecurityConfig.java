@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -52,8 +53,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/h2-console/**");
     }
 
-
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf()
@@ -61,10 +60,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 최대 세션 수 설정
         http.sessionManagement()
-                .maximumSessions(1)
-                .maxSessionsPreventsLogin(true)
-                .expiredUrl("/duplicated-login")
-                .sessionRegistry(sessionRegistry());
+                    .maximumSessions(1)
+                    .maxSessionsPreventsLogin(true)
+                    .sessionRegistry(sessionRegistry());
 
         http
                 .authorizeRequests()
@@ -82,8 +80,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // defaultSuccessUrl -> 성공 시 가야하는 url / failureUrl -> 실패 시 가야하는 url
                     .and()
                 .logout()
-                    .logoutUrl("/logout")
+                    .logoutUrl("/api/logout")
+                    .invalidateHttpSession(true) // 로그아웃 시 세션만료 시키기
                     .permitAll();
+
     }
 
     @Bean
