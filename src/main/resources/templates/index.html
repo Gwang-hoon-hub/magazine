@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>나만의 셀렉샵</title>
+
+    <script>
+
+        function ShowPost(){
+            $.ajax({
+                type: "GET",
+                url: "/api/post",
+
+                success: function (response) {
+                    console.log(response);
+                },
+                error:function(response){
+                    console.log(response.responseJSON)
+                }
+            });
+        }
+
+
+        function Submit(){
+            let image = $("#image").val();
+            let contents = $("#contents").val();
+            console.log(image,contents);
+            $.ajax({
+                type: "POST",
+                url: "/api/post",
+                data: {
+                    "image":image,
+                    "contents":contents
+                },
+                success: function (response) {
+                    console.log(response);
+                },
+                error:function(response){
+
+                    console.log(response.responseJSON)
+                }
+            });
+        }
+
+        function deletePost(){
+
+            let postId = $("#postId").val();
+            $.ajax({
+                type: "Delete",
+                url: "/api/post/"+postId,
+                success: function (response) {
+                    console.log(response);
+                },
+                error:function(response){
+
+                    console.log(response.responseJSON)
+                }
+            });
+
+        }
+        function upSubmit(){
+            let image = $("#upimage").val();
+            let contents = $("#upcontents").val();
+            let postId = $("#uppostId").val();
+
+            console.log(image,contents);
+            $.ajax({
+                type: "PUT",
+                url: "/api/post/"+postId,
+                contentType: 'application/json',
+                data: {
+                    "image":image,
+                    "contents":contents
+
+                },
+                success: function (response) {
+                    console.log(response);
+                },
+                error:function(response){
+
+                    console.log(response.responseJSON)
+                }
+            });
+        }
+
+        function likeSubmit(){
+
+            let postId = $("#likePostId").val();
+
+            console.log(postId)
+            $.ajax({
+                type: "POST",
+                url: "/api/post/like",
+                data: {
+                    "postId":postId
+                },
+                success: function (response) {
+                    console.log(response);
+                },
+                error:function(response){
+
+                    console.log(response.responseJSON)
+                }
+            });
+        }
+        function likeRemoveSubmit(){
+            let likeRemovePostId = $("#likeRemovePostId").val();
+
+            console.log(postId)
+            $.ajax({
+                type: "Delete",
+                url: "/api/post/like",
+                data: {
+                    "postId":likeRemovePostId
+                },
+                success: function (response) {
+                    console.log(response);
+                },                error:function(response){
+
+                    console.log(response.responseJSON)
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="header" style="position:relative;">
+    <div id="header-title-login-user">
+    </div>
+    <div id="header-title-select-shop">
+        Select Shop
+    </div>
+
+    <form id="my_form" method="post" action="/user/logout">
+        <a id="logout-text" href="javascript:{}" onclick="document.getElementById('my_form').submit();">로그아웃</a>
+    </form>
+</div>
+<div class="nav">
+    <div class="nav-see active">
+        모아보기
+    </div>
+    <div class="nav-search">
+        탐색하기
+    </div>
+</div>
+<div id="see-area">
+    <div id="product-container">
+
+    </div>
+</div>
+<div id="search-area">
+    <div>
+        <input type="text" id="query">
+        <!--    <img src="images/icon-search.png" alt="">-->
+    </div>
+    <div id="search-result-box">
+
+    </div>
+
+</div>
+</div>
+====================글읽기 api================================
+<br>
+<button onclick="ShowPost()" ></button>
+<br>
+
+
+====================글쓰기 api================================
+<br>
+<div class="login-id-label">image</div>
+<input  class="image" id="image" >
+
+<div class="login-id-label">contents</div>
+<input   class="contents" id = "contents">
+
+<button onclick="Submit()" ></button>
+<br>
+==================포스트 삭제하기 api===================
+<br>
+<input  class ="postId"  id="postId">
+<button onclick="deletePost()" ></button>
+<br>
+==================포스트 업데이트 api====================
+<br>
+<div class="login-id-label">image</div>
+<input  class="upimage" id="upimage" >
+
+<div class="login-id-label">contents</div>
+<input   class="upcontents" id = "upcontents">
+<div class="login-id-label">postId</div>
+
+<input  class ="uppostId"  id="uppostId">
+<button onclick="upSubmit()" ></button>
+<br>
+=================좋아요 설정하기API====================
+<br>
+<div class="login-id-label">postId</div>
+<input  class="likePostId" id="likePostId" >
+<button onclick="likeSubmit()" ></button>
+<br>
+=================좋아요 제거하기API=====================
+<br>
+<div class="login-id-label">postId</div>
+<input  class="likeRemovePostId" id="likeRemovePostId" >
+<button onclick="likeRemoveSubmit()" ></button>
+</body>
+</html>
