@@ -1,7 +1,7 @@
 package com.pang.magazine.security;
 
 import com.pang.magazine.exception.AuthFailureHandler;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -9,7 +9,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 @Configuration
 @EnableWebSecurity(debug = true)
@@ -30,6 +33,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return bean;
     }
 
+
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }// Register HttpSessionEventPublisher
+
+    @Bean
+    public static ServletListenerRegistrationBean httpSessionEventPublisher() {
+        return new ServletListenerRegistrationBean(new HttpSessionEventPublisher());
+    }
+
     @Override
     public void configure(WebSecurity web) {
         // h2-console 사용에 대한 허용 (CSRF, FrameOptions 무시)
@@ -38,10 +52,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/h2-console/**");
     }
 
+
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf()
-                .ignoringAntMatchers( "/api/**" , "/user/**");
+                .ignoringAntMatchers( "/api/**");
+
+        // 최대 세션 수 설정
+        http.sessionManagement()
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(true)
+                .expiredUrl("/duplicated-login")
+                .sessionRegistry(sessionRegistry());
 
         http
                 .authorizeRequests()
@@ -51,6 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .and()
                 .formLogin()
                 //  로그인 처리 : POST방식 (/signin)
+                    .loginPage("/api/signin")
                     .loginProcessingUrl("/api/signin")
                     .failureHandler(new AuthFailureHandler())
                     .defaultSuccessUrl("/api/singinSuccess")

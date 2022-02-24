@@ -1,5 +1,6 @@
 package com.pang.magazine.exception;
 
+import com.pang.magazine.exception.exceptionclass.DoubleLoginException;
 import com.pang.magazine.exception.exceptionclass.NotRegisterException;
 import com.pang.magazine.exception.exceptionclass.NotSamePwdException;
 import com.pang.magazine.exception.exceptionclass.NotUpdateWriterException;
@@ -59,6 +60,13 @@ public class ErrorHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(DoubleLoginException.class)
+    public ResponseEntity DoubleLoginException(DoubleLoginException e){
+        response = ErrorResponse.builder()
+                .message(e.getMessage())
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 
 
 }

@@ -67,4 +67,6 @@ public class PostController {
     public ResponseEntity getAllPost(@AuthenticationPrincipal UserDetailsImpl userDetails){
         return postService.getAll(userDetails);
     }
+
+
 }

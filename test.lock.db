@@ -1,6 +1,6 @@
 #FileLock
-#Thu Feb 24 13:53:46 KST 2022
-server=192.168.45.212\:11281
+#Thu Feb 24 21:03:36 KST 2022
+server=192.168.45.212\:7275
 hostName=DESKTOP-AS7N5K1
 method=file
-id=17f2a13f76c61c447b5bd83d0ae8b73d7fda03180cc
+id=17f2b9d7e86f43b12b3f0ff1d5d12f73042a07cd886

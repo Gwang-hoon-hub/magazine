@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Builder
+@Getter
 public class PostDto {
 
     @Id

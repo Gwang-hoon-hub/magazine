@@ -73,9 +73,6 @@ public class PostService {
         return response.responseAll();
     }
 
-
-
-
     // 생성
     @Transactional
     public ResponseEntity createPost(PostDto.reqCreateDto dto, Principal principal) {
@@ -97,8 +94,8 @@ public class PostService {
                 .build();
 
         return response.responseAll();
+//        return  new ResponseEntity<>("게시글 작성완료", HttpStatus.OK);
     }
-
 
     // 수정
     @Transactional

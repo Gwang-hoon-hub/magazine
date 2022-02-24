@@ -9,6 +9,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+
+@Getter
 public class MemberDto {
 
     @Getter

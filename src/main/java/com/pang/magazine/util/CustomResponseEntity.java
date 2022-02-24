@@ -1,9 +1,6 @@
 package com.pang.magazine.util;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,6 +12,7 @@ import java.nio.charset.Charset;
 @Builder
 @NoArgsConstructor
 @ToString
+@Getter
 public class CustomResponseEntity {
     private HttpStatus code;
     private String message;
