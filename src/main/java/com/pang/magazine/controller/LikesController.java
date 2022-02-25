@@ -1,5 +1,6 @@
 package com.pang.magazine.controller;
 
+import com.pang.magazine.exception.exceptionclass.NotAuthenticationException;
 import com.pang.magazine.security.UserDetailsImpl;
 import com.pang.magazine.service.LikesService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,9 @@ public class LikesController {
     @PostMapping("/api/favorite/{postId}")
     public ResponseEntity createLikes(@PathVariable("postId") Long postId,
                                       @AuthenticationPrincipal UserDetailsImpl userDetails) throws AuthenticationException {
+        if(userDetails == null){
+            throw new NotAuthenticationException("수정 권한이 없습니다.");
+        }
         return likesService.createLikes(postId, userDetails);
       }
 }

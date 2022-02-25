@@ -1,6 +1,7 @@
 package com.pang.magazine.controller;
 
 import com.pang.magazine.dto.PostDto;
+import com.pang.magazine.exception.exceptionclass.NotAuthenticationException;
 import com.pang.magazine.repository.PostRepository;
 import com.pang.magazine.security.UserDetailsImpl;
 import com.pang.magazine.service.PostService;
@@ -42,7 +43,7 @@ public class PostController {
                                      Principal principal) throws AuthenticationException {
         ResponseEntity response;
         if(principal == null){
-            throw new AuthenticationException("수정 권한이 없습니다.");
+            throw new NotAuthenticationException("수정 권한이 없습니다.");
         }
         return postService.deletePost(postId, principal);
     }
@@ -57,7 +58,7 @@ public class PostController {
         ResponseEntity response;
 
         if(principal == null){
-            throw new AuthenticationException("수정 권한이 없습니다.");
+            throw new NotAuthenticationException("수정 권한이 없습니다.");
         }
         return postService.updatePost(postId, dto, principal);
 

@@ -1,9 +1,6 @@
 package com.pang.magazine.exception;
 
-import com.pang.magazine.exception.exceptionclass.DoubleLoginException;
-import com.pang.magazine.exception.exceptionclass.NotRegisterException;
-import com.pang.magazine.exception.exceptionclass.NotSamePwdException;
-import com.pang.magazine.exception.exceptionclass.NotUpdateWriterException;
+import com.pang.magazine.exception.exceptionclass.*;
 import com.pang.magazine.exception.response.ErrorResponse;
 import com.pang.magazine.exception.response.NotValidResponse;
 import lombok.RequiredArgsConstructor;
@@ -52,8 +49,8 @@ public class ErrorHandler {
                 .build();
     }
 
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity NotAuthentication(AuthenticationException e){
+    @ExceptionHandler(NotAuthenticationException.class)
+    public ResponseEntity NotAuthentication(NotAuthenticationException e){
         response = ErrorResponse.builder()
                 .message(e.getMessage())
                 .build();

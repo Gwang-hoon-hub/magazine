@@ -4,6 +4,7 @@ import com.pang.magazine.domain.Likes;
 import com.pang.magazine.domain.Member;
 import com.pang.magazine.domain.Post;
 import com.pang.magazine.dto.LikesDto;
+import com.pang.magazine.exception.exceptionclass.NotAuthenticationException;
 import com.pang.magazine.exception.exceptionclass.NotFoundException;
 import com.pang.magazine.repository.LikeRepository;
 import com.pang.magazine.repository.MemberRepository;
@@ -32,13 +33,15 @@ public class LikesService {
     public ResponseEntity createLikes(Long postId, UserDetailsImpl userDetails) throws AuthenticationException {
         Optional<Member> byUsername = Optional.ofNullable(memberRepository.findByUsername(userDetails.getUsername()));
         if(!byUsername.isPresent()){
-            throw new AuthenticationException("권한이 없는 유저");
+            throw new NotAuthenticationException("권한이 없는 유저");
         }
 
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new NotFoundException("존재하지 않는 게시물"));
 
         Optional<Likes> likes = likeRepository.findByMemberAndPost(userDetails.getMember(), post);
+
+
 
         if(likes.isPresent()){
             // likes를 찾으면 하트가 되어있기 대문에 취소를 시켜준다.

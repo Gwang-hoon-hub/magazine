@@ -56,7 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf()
-                .ignoringAntMatchers( "/api/**");
+                .disable();
 
         // 최대 세션 수 설정
         http.sessionManagement()
@@ -82,6 +82,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                     .logoutUrl("/api/logout")
                     .invalidateHttpSession(true) // 로그아웃 시 세션만료 시키기
+                    .deleteCookies("JSESSIONID")
                     .permitAll();
 
     }

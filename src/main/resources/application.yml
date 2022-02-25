@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # DB Source
+#    url: jdbc:mysql://spring-db.cyvpzdbrywmx.ap-northeast-2.rds.amazonaws.com:3306/blog
+#    # DB username
+#    username: admin
+#    # DB password
+#    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug

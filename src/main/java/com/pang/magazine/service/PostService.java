@@ -4,6 +4,7 @@ import com.pang.magazine.domain.Likes;
 import com.pang.magazine.domain.Member;
 import com.pang.magazine.domain.Post;
 import com.pang.magazine.dto.PostDto;
+import com.pang.magazine.exception.exceptionclass.NotAuthenticationException;
 import com.pang.magazine.exception.exceptionclass.NotFoundException;
 import com.pang.magazine.exception.exceptionclass.NotUpdateWriterException;
 import com.pang.magazine.repository.LikeRepository;
@@ -109,7 +110,7 @@ public class PostService {
         // 갖고온 post의 작성자가 맞는지 확인하기
         Post post = byId.get();
         if (!post.getMember().getUsername().equals(principal.getName())){
-            throw new AuthenticationException("작성자가 아니라 수정 불가합니다.");
+            throw new NotAuthenticationException("작성자가 아니라 수정 불가합니다.");
         }
         PostDto updated = post.update(dto);
         response = CustomResponseEntity.builder()
@@ -131,7 +132,7 @@ public class PostService {
         // 갖고온 post의 작성자가 맞는지 확인하기
         Post post = byId.get();
         if (!post.getMember().getUsername().equals(principal.getName())){
-            throw new AuthenticationException("작성자가 아니라 삭제 불가합니다.");
+            throw new NotAuthenticationException("작성자가 아니라 삭제 불가합니다.");
         }
         // 삭제해놓기
         postRepository.deleteById(postId);
