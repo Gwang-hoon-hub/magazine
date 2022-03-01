@@ -41,12 +41,12 @@ public class MemberController {
         return response.responseNotData();
     }
 
-    // 로그인은 securityConfig 에서 처리하기
-    @GetMapping("/api/singinSuccess")
-    public ResponseEntity singin(Principal principal) throws AuthenticationException {
-        CustomResponseEntity response;
-        return new ResponseEntity<>(principal.getName() + "님 로그인 성공!", HttpStatus.OK);
-    }
+//    // 로그인은 securityConfig 에서 처리하기
+//    @GetMapping("/api/singinSuccess")
+//    public ResponseEntity singin(Principal principal) throws AuthenticationException {
+//        CustomResponseEntity response;
+//        return new ResponseEntity<>(principal.getName() + "님 로그인 성공!", HttpStatus.OK);
+//    }
 
     @PostMapping("/api/signin")
     public ResponseEntity loginCheck(@Valid @RequestBody MemberDto.reqLoginDto dto, @AuthenticationPrincipal UserDetailsImpl userDetails){
