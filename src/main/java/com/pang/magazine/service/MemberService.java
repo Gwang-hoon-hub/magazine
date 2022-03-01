@@ -85,13 +85,13 @@ public class MemberService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtProvider.createToken(authentication.getName());
 
-        Map<String, String> tokens = new HashMap<>();
-        tokens.put("accessToken", token);
+//        Map<String, String> tokens = new HashMap<>();
+//        tokens.put("accessToken", token);
 
 //        response.setContentType(APPLICATION_JSON_VALUE);
 
         return CustomResponseEntity.builder()
-                .headerData(tokens)
+                .accessToken(token)
                 .data(null)
                 .code(HttpStatus.OK)
                 .message("토큰 돌려주기")
