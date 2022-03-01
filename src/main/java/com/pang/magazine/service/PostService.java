@@ -76,11 +76,11 @@ public class PostService {
 
     // 생성
     @Transactional
-    public ResponseEntity createPost(PostDto.reqCreateDto dto, Principal principal) {
+    public ResponseEntity createPost(PostDto.reqCreateDto dto, String username) {
 
         CustomResponseEntity response;
 
-        Member member = memberRepository.findByUsername(principal.getName());
+        Member member = memberRepository.findByUsername(username);
         Post post = Post.builder()
                 .dto(dto)
                 .member(member)

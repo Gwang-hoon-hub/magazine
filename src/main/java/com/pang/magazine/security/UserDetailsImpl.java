@@ -1,6 +1,7 @@
 package com.pang.magazine.security;
 
 import com.pang.magazine.domain.Member;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-
+@Getter
 public class UserDetailsImpl implements UserDetails {
 
     private final Member member;

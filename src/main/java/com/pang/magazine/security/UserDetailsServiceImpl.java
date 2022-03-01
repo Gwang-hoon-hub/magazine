@@ -21,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
          Member member = Optional
                  .ofNullable(memberRepository.findByUsername(username))
-                 .orElseThrow(() -> new UsernameNotFoundException("user can't find"));
+                 .orElseThrow(() -> new UsernameNotFoundException("(해당 유저는 없습니다.) user can't find"));
 
         return new UserDetailsImpl(member);
     }

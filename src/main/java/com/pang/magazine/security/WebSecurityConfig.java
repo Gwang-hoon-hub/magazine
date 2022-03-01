@@ -1,90 +1,62 @@
 package com.pang.magazine.security;
 
 import com.pang.magazine.exception.AuthFailureHandler;
-import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
+import com.pang.magazine.security.jwt.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.session.HttpSessionEventPublisher;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsUtils;
+import org.springframework.web.filter.CorsFilter;
 
+
+@RequiredArgsConstructor
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true) // @PreAuthorize 어노테이션을 메소드 단위로 추가하기 위해 적용
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    private final JwtProvider jwtProvider;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
-    private final UserDetailsServiceImpl userDetailsService;
-
-    public WebSecurityConfig(UserDetailsServiceImpl userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
-
-    @Bean//UserDetailsService에서 사용자 세부 정보를 검색하는 AuthenticationProvider 구현입니다. 로그인시 ~
-    public DaoAuthenticationProvider daoAuthenticationProvider() {
-        DaoAuthenticationProvider bean = new DaoAuthenticationProvider();
-        bean.setHideUserNotFoundExceptions(false); //이 부분을 설정해줘야 아이디가 불일치 에러 처리 가능
-        bean.setUserDetailsService(userDetailsService);
-        bean.setPasswordEncoder(this.encodePassword());
-        return bean;
-    }
-
-
-    @Bean
-    public SessionRegistry sessionRegistry() {
-        return new SessionRegistryImpl();
-    }// Register HttpSessionEventPublisher
-
-    @Bean
-    public static ServletListenerRegistrationBean httpSessionEventPublisher() {
-        return new ServletListenerRegistrationBean(new HttpSessionEventPublisher());
-    }
-
-    @Override
-    public void configure(WebSecurity web) {
-        // h2-console 사용에 대한 허용 (CSRF, FrameOptions 무시)
-        web
-                .ignoring()
-                .antMatchers("/h2-console/**");
-    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf()
-                .disable();
 
-        // 최대 세션 수 설정
-        http.sessionManagement()
-                    .maximumSessions(1)
-                    .maxSessionsPreventsLogin(true)
-                    .sessionRegistry(sessionRegistry());
+        http    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        // cors 필터 사용 /  csrf, 세션 disable하기
+        http    .addFilterBefore(new CustomAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
+                .csrf().disable()
+
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(jwtAccessDeniedHandler);
+
 
         http
+                .httpBasic().disable()
                 .authorizeRequests()
-                    .antMatchers("/api/**").permitAll()
-                    .anyRequest().permitAll()
-//                    .anyRequest().authenticated()
+                    .antMatchers(HttpMethod.POST, "/api/signin").permitAll()
+                    .antMatchers(HttpMethod.POST, "/api/signup").permitAll()
+                    .antMatchers(HttpMethod.GET, "/api/posts").permitAll()
+                    .anyRequest().authenticated()
                     .and()
                 .formLogin()
-                //  로그인 처리 : POST방식 (/signin)
-                    .loginPage("/api/signin")
-                    .loginProcessingUrl("/api/signin")
-                    .failureHandler(new AuthFailureHandler())
-                    .defaultSuccessUrl("/api/singinSuccess")
-                    .permitAll()
-                // defaultSuccessUrl -> 성공 시 가야하는 url / failureUrl -> 실패 시 가야하는 url
-                    .and()
-                .logout()
-                    .logoutUrl("/api/logout")
-                    .invalidateHttpSession(true) // 로그아웃 시 세션만료 시키기
-                    .deleteCookies("JSESSIONID")
-                    .permitAll();
+//                .loginProcessingUrl("/api/signin")
+//                .successHandler(new LoginSucessHandler(jwtProvider))
+                .failureHandler(new AuthFailureHandler())
+                .and()
+                .cors();
 
+
+//                .apply(new JwtSecurityConfig(jwtProvider)); // jwt필터를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스 적용
     }
 
     @Bean

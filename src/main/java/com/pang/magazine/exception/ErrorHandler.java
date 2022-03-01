@@ -65,5 +65,12 @@ public class ErrorHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(LoginException.class)
+    public ResponseEntity LoginException(LoginException e){
+        response = ErrorResponse.builder()
+                .message(e.getMessage())
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 
 }
