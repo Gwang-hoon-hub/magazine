@@ -13,6 +13,7 @@ import com.pang.magazine.repository.PostRepository;
 import com.pang.magazine.security.UserDetailsImpl;
 import com.pang.magazine.util.CustomResponseEntity;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class PostService {
 
     private final LikeRepository likeRepository;
@@ -123,7 +125,7 @@ public class PostService {
 
     // 삭제
     @Transactional
-    public ResponseEntity deletePost(Long postId, Principal principal) throws AuthenticationException {
+    public ResponseEntity deletePost(Long postId, UserDetailsImpl userDetails) throws AuthenticationException {
         CustomResponseEntity response;
         Optional<Post> byId = postRepository.findById(postId);
         if(byId.isEmpty()){
@@ -131,8 +133,12 @@ public class PostService {
         }
         // 갖고온 post의 작성자가 맞는지 확인하기
         Post post = byId.get();
-        if (!post.getMember().getUsername().equals(principal.getName())){
+        if (!post.getMember().getUsername().equals(userDetails.getUsername())){
             throw new NotAuthenticationException("작성자가 아니라 삭제 불가합니다.");
+        }
+        List<Likes> likes = likeRepository.findAllByPostId(postId);
+        for (Likes like : likes) {
+            likeRepository.delete(like);
         }
         // 삭제해놓기
         postRepository.deleteById(postId);

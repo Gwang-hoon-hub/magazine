@@ -44,12 +44,13 @@ public class PostController {
     // 삭제
     @DeleteMapping("/api/posts/{postId}")
     public ResponseEntity deletePost(@PathVariable("postId") Long postId,
-                                     Principal principal) throws AuthenticationException {
+                                     @AuthenticationPrincipal UserDetailsImpl
+                                     userDetails) throws AuthenticationException {
         ResponseEntity response;
-        if(principal == null){
+        if(userDetails == null){
             throw new NotAuthenticationException("수정 권한이 없습니다.");
         }
-        return postService.deletePost(postId, principal);
+        return postService.deletePost(postId, userDetails);
     }
 
 

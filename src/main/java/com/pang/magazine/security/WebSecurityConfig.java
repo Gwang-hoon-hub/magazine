@@ -48,11 +48,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.GET, "/api/posts").permitAll()
                     .anyRequest().authenticated()
                     .and()
-                .formLogin()
+//                .formLogin()
 //                .loginProcessingUrl("/api/signin")
 //                .successHandler(new LoginSucessHandler(jwtProvider))
-                .failureHandler(new AuthFailureHandler())
-                .and()
+//                .failureHandler(new AuthFailureHandler())
+//                .and()
                 .cors();
 
 

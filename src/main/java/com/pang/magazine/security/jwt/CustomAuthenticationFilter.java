@@ -1,18 +1,12 @@
 package com.pang.magazine.security.jwt;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.security.SignatureException;
-import lombok.RequiredArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -22,8 +16,8 @@ import java.io.IOException;
 
 @Slf4j
 public class CustomAuthenticationFilter extends GenericFilterBean {
+
     // 권한 검증
-    
     private final JwtProvider jwtProvider;
 
     private static final Logger logger = LoggerFactory.getLogger(CustomAuthenticationFilter.class);
