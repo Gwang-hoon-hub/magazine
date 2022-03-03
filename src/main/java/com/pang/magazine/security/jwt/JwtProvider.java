@@ -22,7 +22,6 @@ import java.util.Base64;
 import java.util.Date;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class JwtProvider {
     private long accessTokenTime = 1000 * 60 * 5; // 2분

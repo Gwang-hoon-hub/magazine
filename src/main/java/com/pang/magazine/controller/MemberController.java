@@ -23,7 +23,7 @@ import java.security.Principal;
 @Slf4j
 public class MemberController {
     private final MemberService memberService;
-    private final MemberRepository memberRepository;
+//    private final MemberRepository memberRepository;
 
     @GetMapping("/hello")
     public String hello(){
